@@ -21,19 +21,18 @@ const Separator = () => (
 
 Sentry.init({
   dsn: "https://f97da1c27e384ac0b90013597544f6b0@o87286.ingest.sentry.io/5411157",
-  logLevel: "debug",
-  debug: true,
+  environment: "production",
+  attachStacktrace: true,
   deactivateStacktraceMerging: false,
   enableAutoSessionTracking: true,
   sessionTrackingIntervalMillis: 10000,
 });
 
-
 export default class App extends React.Component {
 
    // async function to call the Java native method
-   async generateJavaError() {
-    JavaMainCustomModule.generateError( (err) => {console.log(err)}, (msg) => {console.log(msg)} );
+   async generateUnHandledError() {
+    JavaMainCustomModule.generateUnHandledError( (err) => {console.log(err)}, (msg) => {console.log(msg)} );
   }
 
   render() {
@@ -75,10 +74,17 @@ export default class App extends React.Component {
           <Button
             style={styles.button}
             styleDisabled={{ color: 'red' }}
-            // onPress={() => { Sentry.nativeCrash(); }}
-            onPress={ this.generateJavaError }
+            onPress={() => { Sentry.nativeCrash(); }}
             accessibilityLabel={'native crash'}
             title="native crash!"
+          />
+          <Separator />
+            <Button
+            style={styles.button}
+            styleDisabled={{ color: 'red' }}
+            onPress={ this.generateUnHandledError }
+            accessibilityLabel={'java crash'}
+            title="Java Crash"
           />
           <Separator />
           <Button
@@ -88,15 +94,6 @@ export default class App extends React.Component {
             accessibilityLabel={'send message'}
             title="send message"
           />
-          <Separator />
-
-          <Button
-            style={styles.button}
-            styleDisabled={{ color: 'red' }}
-            onPress={() => { Sentry.setTag('customerType', 'enterprise'); Sentry.setTag('environment', 'production'); }}
-            accessibilityLabel={'set sample tags'}
-            title="set sample tags"
-          />
 
         </View>
       </ImageBackground>
@@ -104,6 +101,13 @@ export default class App extends React.Component {
   }
 }
 
+Sentry.setTag("customer_type", "enterprise");
+
+Sentry.addBreadcrumb({
+  category: "Custom",
+  message: "Button pressed by user",
+  level: Sentry.Severity.Info,
+});
 
 const styles = StyleSheet.create({
   container: {

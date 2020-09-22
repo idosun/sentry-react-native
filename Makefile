@@ -2,11 +2,13 @@ SENTRY_ORG=testorg-az
 SENTRY_PROJECT=ido-react-native-hc
 VERSION=com.sentry_react_native@1.0+1
 PREFIX=static/js
-ENVIRONMENT=Staging
+ENVIRONMENT=Production
 
-setup_android: build_react_native_android create_release associate_commits deploy_release
+setup_android: assemble_android build_react_native_android create_release associate_commits deploy_release
 
 # setup_release: build_react_native_android create_release associate_commits deploy_release
+assemble_android:
+	cd android && ./gradlew assembleRelease
 
 build_react_native_android:
 	npx react-native run-android --variant Release
