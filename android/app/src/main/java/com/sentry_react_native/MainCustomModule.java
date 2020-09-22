@@ -23,7 +23,7 @@ public class MainCustomModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void generateUnHandledError(Callback errorCallback, Callback successCallback) {
         try {
-            //successCallback.invoke("success");...
+            //successCallback.invoke("success");
             int[] a = new int[-5];
 
         } catch (IllegalViewOperationException e) {
