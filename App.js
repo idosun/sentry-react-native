@@ -23,9 +23,16 @@ Sentry.init({
   dsn: "https://f97da1c27e384ac0b90013597544f6b0@o87286.ingest.sentry.io/5411157",
   environment: "production",
   attachStacktrace: true,
-  deactivateStacktraceMerging: false,
   enableAutoSessionTracking: true,
   sessionTrackingIntervalMillis: 10000,
+  beforeSend(event) {
+    // Modify the event here
+    if (event.user) {
+      // Don't send user's email address
+      delete event.user.email;
+    }
+    return event;
+  },
 });
 
 export default class App extends React.Component {
@@ -102,6 +109,11 @@ export default class App extends React.Component {
 }
 
 Sentry.setTag("customer_type", "enterprise");
+
+Sentry.setUser({ 
+  email: "email@email.com",
+  user_language: "en"
+});
 
 Sentry.addBreadcrumb({
   category: "Custom",

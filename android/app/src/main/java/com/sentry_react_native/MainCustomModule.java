@@ -22,6 +22,7 @@ public class MainCustomModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void generateUnHandledError(Callback errorCallback, Callback successCallback) {
+
         try {
             //successCallback.invoke("success");
             int[] a = new int[-5];
